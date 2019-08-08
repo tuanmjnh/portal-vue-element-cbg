@@ -71,10 +71,11 @@ export default {
     template_list: 'List',
     template_add: 'Add',
     hddt: 'HDDT QR-Code',
-    hddt_css: 'HDDT CSS',
-    hddt_cbg: 'HDDT CBG',
-    hddt_ezpay: 'HDDT EZPay',
-    hddt_old: 'HDDT Cũ'
+    hddt_css: 'CSS',
+    hddt_cbgThayThe: 'CBG Thay thế',
+    hddt_cbg: 'CBG',
+    hddt_ezpay: 'EZPay',
+    hddt_old: 'Cũ'
   },
   global: {
     add: 'Thêm mới',

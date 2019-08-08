@@ -144,6 +144,12 @@ export const asyncRoutes = [
         meta: { title: 'hddt_cbg', icon: 'qr-code', noCache: true }
       },
       {
+        path: 'cbgThayThe',
+        name: 'cbgThayThe',
+        component: () => import('@/views/hddt/cbgThayThe'),
+        meta: { title: 'hddt_cbgThayThe', icon: 'qr-code', noCache: true }
+      },
+      {
         path: 'ezpay',
         name: 'ezpay',
         component: () => import('@/views/hddt/ezpay'),
