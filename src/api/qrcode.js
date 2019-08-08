@@ -21,3 +21,9 @@ export function getKyHoaDon(params) {
 export function getHDDTOld(params) {
   return http.post(`${collection}/old`, params)
 }
+export function getTableHDDT(params) {
+  return http.get(`${collection}/table`, params)
+}
+export function getHDDTDULIEU(params) {
+  return http.post(`${collection}/dulieucbg`, params)
+}

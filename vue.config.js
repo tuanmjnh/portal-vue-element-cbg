@@ -8,7 +8,7 @@ function resolve(dir) {
 process.env.VUE_CLI_APP_VERSION = _package.version
 process.env.VUE_CLI_APP_TITLE = _package.name
 
-const name = process.env.VUE_CLI_APP_TITLE || 'Portal BKN' // page title
+const name = process.env.VUE_CLI_APP_TITLE || 'Portal CBG' // page title
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run

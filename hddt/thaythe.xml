@@ -1,0 +1,39 @@
+<Invoices>
+  <BillTime>201907</BillTime>
+  <Inv>
+    <key>VPCA00328549072019</key>
+    <Invoice>
+      <MaThanhToan><![CDATA[0002020102112620994814010686973800115204000153037045802VN5914VNPT VINAPHONE6005HANOI6106100000625501060720190612VPCA003285490703VPC08182CUOC MANG CO DINH]]></MaThanhToan>
+      <CusCode><![CDATA[VPCA00328549]]></CusCode>
+      <CusName><![CDATA[CÔNG AN TỈNH VĨNH PHÚC]]></CusName>
+      <CusAddress><![CDATA[PHƯỜNG LIÊN BẢO, THÀNH PHỐ VĨNH YÊN, TỈNH VĨNH PHÚC]]></CusAddress>
+      <CusPhone><![CDATA[000051454TSL]]></CusPhone>
+      <CusTaxCode><![CDATA[]]></CusTaxCode>
+      <PaymentMethod><![CDATA[TM/CK]]></PaymentMethod>
+      <KindOfService><![CDATA[07/2019]]></KindOfService>
+      <ResourceCode><![CDATA[TVY030]]></ResourceCode>
+      <Products>
+        <Product>
+          <ProdName><![CDATA[Cước phát sinh chịu thuế (A)]]></ProdName>
+          <ProdUnit></ProdUnit>
+          <ProdQuantity></ProdQuantity>
+          <Amount>3621109</Amount>
+        </Product>
+        <Product>
+          <ProdName><![CDATA[Cước phát sinh không chịu thuế (B)]]></ProdName>
+          <ProdUnit></ProdUnit>
+          <ProdQuantity></ProdQuantity>
+          <Amount>0</Amount>
+        </Product>
+      </Products>
+      <Total>3621109</Total>
+      <DiscountAmount></DiscountAmount>
+      <VATRate>10</VATRate>
+      <VATAmount>362111</VATAmount>
+      <Amount>3983220</Amount>
+      <AmountInWords><![CDATA[Ba triệu chín trăm tám mươi ba nghìn hai trăm hai mươi đồng]]></AmountInWords>
+      <PaymentStatus>0</PaymentStatus>
+      <Extra><![CDATA[TVY030;;]]></Extra>
+    </Invoice>
+  </Inv>
+</Invoices>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           

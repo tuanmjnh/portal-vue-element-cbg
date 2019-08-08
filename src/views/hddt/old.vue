@@ -1,21 +1,14 @@
 <template>
   <div class="app-container">
     <div class="el-row">
-      <el-input
-        v-model="params.ma_tt"
-        type="textarea"
-        :autosize="{ minRows: 2, maxRows: 4}"
-        placeholder="Mã thanh toán cần tạo nếu có"
-      ></el-input>
+      <el-input v-model="params.ma_tt" type="textarea" :autosize="{ minRows: 2, maxRows: 4}"
+        placeholder="Mã thanh toán cần tạo nếu có">
+      </el-input>
     </div>
     <div class="el-row">
       <el-select v-model="params.kyhoadon" placeholder="Kỳ hóa đơn">
-        <el-option
-          v-for="(item,index) in kyhoadon"
-          :key="index"
-          :label="item.kyhoadon"
-          :value="`${item.nam}-${item.thang}-${item.chuky}`"
-        >
+        <el-option v-for="(item,index) in kyhoadon" :key="index" :label="item.kyhoadon"
+          :value="`${item.nam}-${item.thang}-${item.chuky}`">
           <span style="float: left">{{ item.kyhoadon }}</span>
         </el-option>
       </el-select>
@@ -27,28 +20,18 @@
     </div>
     <div class="el-row">
       <div v-if="exportData.xmlKhachHang" class="el-col el-col-6 el-xs-24 el-sm-24">
-        <label>Khách hàng:</label>
-        <export-data
-          :data="exportData.xmlKhachHang"
-          :items="[
+        <label>Khách hàng: </label>
+        <export-data :data="exportData.xmlKhachHang" :items="[
       { title: 'Export .xml' , type: 'xml' },
       { title: 'Export .zip' , type: 'zip-xml' }
-      ]"
-          :filename="exportData.filenameKhachHang"
-          :zipname="exportData.zipnameKhachHang"
-        />
+      ]" :filename="exportData.filenameKhachHang" :zipname="exportData.zipnameKhachHang" />
       </div>
       <div v-if="exportData.xmlHoadon" class="el-col el-col-6 el-xs-24 el-sm-24">
-        <label>Hóa đơn:</label>
-        <export-data
-          :data="exportData.xmlHoadon"
-          :items="[
+        <label>Hóa đơn: </label>
+        <export-data :data="exportData.xmlHoadon" :items="[
       { title: 'Export .xml' , type: 'xml' },
       { title: 'Export .zip' , type: 'zip-xml' }
-      ]"
-          :filename="exportData.filenameHoadon"
-          :zipname="exportData.zipnameHoadon"
-        />
+      ]" :filename="exportData.filenameHoadon" :zipname="exportData.zipnameHoadon" />
       </div>
     </div>
   </div>
@@ -81,42 +64,39 @@ export default {
     }
   },
   created() {
-    api.getKyHoaDon().then(rs => {
+    api.getKyHoaDon().then((rs) => {
       this.kyhoadon = rs
     })
   },
   methods: {
     onSubmit() {
       this.loading = true
-      this.initData()
-      api
-        .getHDDTOld({
-          time: this.params.kyhoadon,
-          kyhoadon: this.params.kyhoadon.split('-'),
-          ma_tt: this.params.ma_tt ? this.params.ma_tt.split('\n') : []
-        })
-        .then(async rs => {
-          // var xmlString = xml.objectToXml(rs)
-          // console.log(xmlString)
-          this.exportData.xmlHoadon = await this.createHoaDon({
-            data: rs,
-            kyhoadon: this.params.kyhoadon
-          })
-          this.exportData.xmlKhachHang = await this.createKhachHang({
-            data: rs,
-            kyhoadon: this.params.kyhoadon
-          })
-        })
-        .finally(() => {
-          this.reset()
-        })
+      const kyhoadon = this.params.kyhoadon.split('-')
+      this.exportData.xmlHoadon = ''
+      this.exportData.xmlKhachHang = ''
+      this.exportData.zipnameHoadon = `hoadon_${kyhoadon[0] + kyhoadon[1] + kyhoadon[2]}`
+      this.exportData.zipnameKhachHang = `khachhang_${kyhoadon[0] + kyhoadon[1] + kyhoadon[2]}`
+      // this.initData()
+      api.getHDDTOld({
+        time: this.params.kyhoadon,
+        kyhoadon: kyhoadon,
+        ma_tt: this.params.ma_tt ? this.params.ma_tt.split('\n') : []
+      }).then(async (rs) => {
+        // var xmlString = xml.objectToXml(rs)
+        // console.log(xmlString)
+        this.exportData.xmlHoadon = await this.createHoaDon({ data: rs, kyhoadon: kyhoadon })
+        this.exportData.xmlKhachHang = await this.createKhachHang({ data: rs, kyhoadon: kyhoadon })
+      }).finally(() => {
+        this.reset()
+      })
     },
-    onChangeKyhoadon(val) {
-      this.initData()
-    },
+    // onChangeKyhoadon(val) {
+    //   this.initData()
+    // },
     createHoaDon({ data, kyhoadon }) {
+      // console.log(kyhoadon)
       return new Promise((resolve, reject) => {
-        let xmlHoadon = `<Invoices><BillTime>${this.billTime}</BillTime>\r\n`
+        let xmlHoadon = `<Invoices><BillTime>${kyhoadon[0] + kyhoadon[1] + kyhoadon[2]}</BillTime>\r\n`
         for (const i of data) {
           xmlHoadon += `<Inv>`
           xmlHoadon += `<key>${i.fkey}</key>`
@@ -127,7 +107,7 @@ export default {
           xmlHoadon += `<CusPhone>${i.dienthoai_lh}</CusPhone>`
           xmlHoadon += `<CusTaxCode></CusTaxCode>`
           xmlHoadon += `<PaymentMethod>TM/CK</PaymentMethod>`
-          xmlHoadon += `<KindOfService>${this.kindOfService}</KindOfService>`
+          xmlHoadon += `<KindOfService>${kyhoadon[1] + '/' + kyhoadon[0]}</KindOfService>`
           xmlHoadon += `<Products>`
           xmlHoadon += `<Product>`
           xmlHoadon += `<ProdName><![CDATA[Cước dịch vụ viễn thông]]></ProdName>`
@@ -158,8 +138,8 @@ export default {
           xmlHoadon += `<Amount>${i.tien_km}</Amount>`
           xmlHoadon += `</Product>`
           xmlHoadon += `</Products>`
-          xmlHoadon += `<Extra><![CDATA[${i.tuyenthu}${i.cantru}${i.tong_pt}]]></Extra>`
-          xmlHoadon += `<MaThanhToan>${i.qrcode}</MaThanhToan>`
+          xmlHoadon += `<Extra><![CDATA[${i.tuyenthu};${i.cantru};${i.tong_pt}]]></Extra>`
+          xmlHoadon += `<MaThanhToan>${this.getMaThanhToanHD(kyhoadon[1] + kyhoadon[0], i.ma_tt, 2)}</MaThanhToan>`
           xmlHoadon += `<Total>${i.tien}</Total>`
           xmlHoadon += `<DiscountAmount></DiscountAmount>`
           xmlHoadon += `<VATRate>10</VATRate>`
@@ -191,7 +171,7 @@ export default {
           xml += `<ContactPerson><![CDATA[]]></ContactPerson>`
           xml += `<RepresentPerson><![CDATA[]]></RepresentPerson>`
           xml += `<CusType>1</CusType>`
-          xml += `<MaThanhToan>${i.qrcode}</MaThanhToan>`
+          xml += `<MaThanhToan>${this.getMaThanhToanHD(kyhoadon[1] + kyhoadon[0], i.ma_tt, 2)}</MaThanhToan>`
           xml += `</Customer>\r\n`
         }
         xml += '</Customers>'
@@ -199,11 +179,11 @@ export default {
       })
     },
     getMaThanhToanHD(kyhoadon, ma_tt, type) {
+      // console.log(kyhoadon, ma_tt, type)
       // Ver 1
-      // string first = '0002010102112620970415010686973800115204123453037045802VN5910VIETINBANK6005HANOI6106100000'
+      // string first = "0002010102112620970415010686973800115204123453037045802VN5910VIETINBANK6005HANOI6106100000";
       // Ver 2
-      const first =
-        '0002020102112620994814010686973800115204000153037045802VN5914VNPT VINAPHONE6005HANOI6106100000'
+      const first = '0002020102112620994814010686973800115204000153037045802VN5914VNPT VINAPHONE6005HANOI6106100000'
       const time = '0106' + kyhoadon
       const province = '0703' + 'BCN' // HNI
       // Portal = 1,
@@ -213,14 +193,13 @@ export default {
       // AnPhamQLTT = 5 //bản kê thu cước
       const QRType = '0818' + '2'
       const details = type === 2 ? 'CUOC MANG DI DONG' : 'CUOC MANG CO DINH'
-      const last =
-        time + this.fixMaThanhToan(ma_tt) + province + QRType + details
-      const tagLength = '62' + last.Length.ToString()
+      const last = time + this.fixMaThanhToan(ma_tt) + province + QRType + details
+      const tagLength = `62${last.length}`
       return first + tagLength + last
-      // '<MaThanhToan><![CDATA[0002010102112620970415010686973800115204123453037045802VN5909VIETINBANK6005HANOI6106100000626301060720170613  024357434690703BCN08172CUOC MANG CODINH]]></MaThanhToan>'
+      // "<MaThanhToan><![CDATA[0002010102112620970415010686973800115204123453037045802VN5909VIETINBANK6005HANOI6106100000626301060720170613  024357434690703BCN08172CUOC MANG CODINH]]></MaThanhToan>"
     },
     fixMaThanhToan(ma_cq, preFixMain = '06', dfLenght = 13) {
-      ma_cq = ma_cq.Trim()
+      ma_cq = ma_cq.trim()
       const count = ma_cq.length
       let preFixMaCQ = ''
       if (count < dfLenght)
@@ -228,15 +207,16 @@ export default {
           preFixMaCQ = ' ' + preFixMaCQ
         }
       else if (count > dfLenght) dfLenght = count
+
       return preFixMain + dfLenght + ma_cq + preFixMaCQ
     },
     reset() {
       this.loading = false
     },
     initData() {
-      const khd = this.params.kyhoadon.split('-')
-      this.billTime = khd[0] + khd[1] + khd[2]
-      this.kindOfService = khd[1] + '/' + khd[0]
+      // const khd = this.params.kyhoadon.split('-')
+      // this.billTime = khd[0] + khd[1] + khd[2]
+      // this.kindOfService = khd[1] + '/' + khd[0]
       this.exportData.xmlHoadon = ''
       this.exportData.xmlKhachHang = ''
       this.exportData.zipnameHoadon = `hoadon_${this.billTime}`
