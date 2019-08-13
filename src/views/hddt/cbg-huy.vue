@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="el-row">
       <el-input v-model="params.ma_tt" type="textarea" :autosize="{ minRows: 2, maxRows: 4}"
-        placeholder="Mã thanh toán cần tạo nếu có">
+        placeholder="Mã thanh toán cần tạo nếu có okok">
       </el-input>
     </div>
     <div class="el-row">
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import * as api from '@/api/qrcode'
+import * as api from '@/api/hddt'
 import * as xml from '@/utils/xml'
 import ExportData from '@/components/ExportData'
 export default {
@@ -51,20 +51,25 @@ export default {
       exportData: {
         xmlHoadon: '',
         xmlKhachHang: '',
-        filenameHoadon: 'hoadon',
+        filenameHoadon: 'huy',
         filenameKhachHang: 'cus',
-        zipnameHoadon: `hoadon_${this.billTime}`,
+        zipnameHoadon: `huy_${this.billTime}`,
         zipnameKhachHang: `khachhang_${this.billTime}`
       },
       params: {
-        table: 'HDDT_20190701',
+        table: '',
         ma_tt: ''
       }
     }
   },
   created() {
-    api.getTableHDDT().then((rs) => {
-      this.tables = rs
+    api.getTableHDDT({
+      data: { table: 'hddt_huy_' }
+    }).then((rs) => {
+      if (rs && rs.length > 0) {
+        this.tables = rs
+        this.params.table = rs[0].name
+      }
     })
   },
   methods: {
@@ -74,7 +79,7 @@ export default {
       const kyhoadon = [table.substr(0, 4), table.substr(4, 2), '01']
       this.exportData.xmlHoadon = ''
       this.exportData.xmlKhachHang = ''
-      this.exportData.zipnameHoadon = `hoadon_${kyhoadon[0] + kyhoadon[1] + kyhoadon[2]}`
+      this.exportData.zipnameHoadon = `huy_${kyhoadon[0] + kyhoadon[1] + kyhoadon[2]}`
       this.exportData.zipnameKhachHang = `khachhang_${kyhoadon[0] + kyhoadon[1] + kyhoadon[2]}`
       // this.initData()
       api.getHDDTDULIEU({
@@ -96,62 +101,11 @@ export default {
     createHoaDon({ data, kyhoadon }) {
       // console.log(kyhoadon)
       return new Promise((resolve, reject) => {
-        let xmlHoadon = `<Invoices><BillTime>${kyhoadon[0] + kyhoadon[1] + kyhoadon[2]}</BillTime>\r\n`
+        let xmlHoadon = `<Inv>\r\n`
         for (const i of data) {
-          xmlHoadon += `<Inv>`
-          xmlHoadon += `<key>${i.fkey}</key>`
-          xmlHoadon += `<Invoice>`
-          xmlHoadon += `<MaThanhToan>${i.qrcode ? i.qrcode : this.getMaThanhToanHD(kyhoadon[1] + kyhoadon[0], i.ma_tt, 2)}</MaThanhToan>`
-          xmlHoadon += `<CusCode><![CDATA[${i.ma_tt}]]></CusCode>`
-          xmlHoadon += `<CusName><![CDATA[${i.ten_tt}]]></CusName>`
-          xmlHoadon += `<CusAddress><![CDATA[${i.diachi_tt}]]></CusAddress>`
-          xmlHoadon += `<CusPhone><![CDATA[${i.dienthoai_lh}]]></CusPhone>`
-          xmlHoadon += `<CusTaxCode><![CDATA[]]></CusTaxCode>`
-          xmlHoadon += `<PaymentMethod><![CDATA[TM/CK]]></PaymentMethod>`
-          xmlHoadon += `<KindOfService><![CDATA[${kyhoadon[1] + '/' + kyhoadon[0]}]]></KindOfService>`
-          xmlHoadon += `<ResourceCode><![CDATA[${i.manv_tc}]]></ResourceCode>`
-          xmlHoadon += `<Products>`
-          xmlHoadon += `<Product>`
-          xmlHoadon += `<ProdName><![CDATA[Cước dịch vụ viễn thông: ${kyhoadon[1] + '/' + kyhoadon[0]}]]></ProdName>`
-          xmlHoadon += `<ProdUnit></ProdUnit>`
-          xmlHoadon += `<ProdQuantity></ProdQuantity>`
-          xmlHoadon += `<ProdPrice></ProdPrice>`
-          xmlHoadon += `<Amount>${i.cuoc_cthue}</Amount>`
-          xmlHoadon += `</Product>`
-          xmlHoadon += `<Product>`
-          xmlHoadon += `<ProdName><![CDATA[Cước dịch vụ Viễn thông không thuế]]></ProdName>`
-          xmlHoadon += `<ProdUnit></ProdUnit>`
-          xmlHoadon += `<ProdQuantity></ProdQuantity>`
-          xmlHoadon += `<ProdPrice></ProdPrice>`
-          xmlHoadon += `<Amount>${i.cuoc_kthue}</Amount>`
-          xmlHoadon += `</Product>`
-          xmlHoadon += `<Product>`
-          xmlHoadon += `<ProdName><![CDATA[Chiết khấu + đa dịch vụ]]></ProdName>`
-          xmlHoadon += `<ProdUnit></ProdUnit>`
-          xmlHoadon += `<ProdQuantity></ProdQuantity>`
-          xmlHoadon += `<ProdPrice></ProdPrice>`
-          xmlHoadon += `<Amount>0</Amount>`
-          xmlHoadon += `</Product>`
-          xmlHoadon += `<Product>`
-          xmlHoadon += `<ProdName><![CDATA[Khuyến mại]]></ProdName>`
-          xmlHoadon += `<ProdUnit></ProdUnit>`
-          xmlHoadon += `<ProdQuantity></ProdQuantity>`
-          xmlHoadon += `<ProdPrice></ProdPrice>`
-          xmlHoadon += `<Amount>${i.tien_km}</Amount>`
-          xmlHoadon += `</Product>`
-          xmlHoadon += `</Products>`
-          xmlHoadon += `<Extra><![CDATA[${i.tuyenthu};${i.cantru};${i.tong_pt}]]></Extra>`
-          xmlHoadon += `<Total>${i.tien}</Total>`
-          xmlHoadon += `<DiscountAmount></DiscountAmount>`
-          xmlHoadon += `<VATRate>10</VATRate>`
-          xmlHoadon += `<VATAmount>${i.vat}</VATAmount>`
-          xmlHoadon += `<Amount>${i.tong}</Amount>`
-          xmlHoadon += `<AmountInWords>${i.tong_chu}</AmountInWords>`
-          xmlHoadon += `<PaymentStatus>0</PaymentStatus>`
-          xmlHoadon += `</Invoice>`
-          xmlHoadon += `</Inv>\r\n`
+          xmlHoadon += `<key>${i.fkey}</key>\r\n`
         }
-        xmlHoadon += '</Invoices>'
+        xmlHoadon += '</Inv>'
         resolve(xmlHoadon)
       })
     },

@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import * as api from '@/api/qrcode'
+import * as api from '@/api/hddt'
 import * as xml from '@/utils/xml'
 import ExportData from '@/components/ExportData'
 export default {

@@ -73,6 +73,7 @@ export default {
     hddt: 'HDDT QR-Code',
     hddt_css: 'CSS',
     hddt_cbgThayThe: 'CBG Thay thế',
+    hddt_cbgHuy: 'CBG Hủy',
     hddt_cbg: 'CBG',
     hddt_ezpay: 'EZPay',
     hddt_old: 'Cũ'

@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="el-row">
       <el-input v-model="params.ma_tt" type="textarea" :autosize="{ minRows: 2, maxRows: 4}"
-        placeholder="Mã thanh toán cần tạo nếu có">
+        placeholder="Mã thanh toán cần tạo nếu có okok">
       </el-input>
     </div>
     <div class="el-row">
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import * as api from '@/api/qrcode'
+import * as api from '@/api/hddt'
 import * as xml from '@/utils/xml'
 import ExportData from '@/components/ExportData'
 export default {
@@ -57,14 +57,19 @@ export default {
         zipnameKhachHang: `khachhang_${this.billTime}`
       },
       params: {
-        table: 'HDDT_20190701',
+        table: '',
         ma_tt: ''
       }
     }
   },
   created() {
-    api.getTableHDDT().then((rs) => {
-      this.tables = rs
+    api.getTableHDDT({
+      data: { table: 'HDDT_2' }
+    }).then((rs) => {
+      if (rs && rs.length > 0) {
+        this.tables = rs
+        this.params.table = rs[0].name
+      }
     })
   },
   methods: {
@@ -110,7 +115,7 @@ export default {
           xmlHoadon += `<KindOfService>${kyhoadon[1] + '/' + kyhoadon[0]}</KindOfService>`
           xmlHoadon += `<Products>`
           xmlHoadon += `<Product>`
-          xmlHoadon += `<ProdName><![CDATA[Cước dịch vụ viễn thông]]></ProdName>`
+          xmlHoadon += `<ProdName><![CDATA[Cước dịch vụ viễn thông: ${kyhoadon[1] + '/' + kyhoadon[0]}]]></ProdName>`
           xmlHoadon += `<ProdUnit></ProdUnit>`
           xmlHoadon += `<ProdQuantity></ProdQuantity>`
           xmlHoadon += `<ProdPrice></ProdPrice>`

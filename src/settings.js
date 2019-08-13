@@ -1,5 +1,5 @@
 module.exports = {
-  title: 'Portal BKN',
+  title: 'Portal CBG',
 
   /**
    * @type {boolean} true | false
